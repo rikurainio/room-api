@@ -35,7 +35,7 @@ export async function reservationRoutes(fastify: FastifyInstance): Promise<void>
           required: ['roomId', 'title', 'startTime', 'endTime'],
           properties: {
             roomId: { type: 'string', minLength: 1 },
-            title: { type: 'string', minLength: 1 },
+            title: { type: 'string', minLength: 1, maxLength: 150 },
             startTime: { type: 'string', format: 'date-time' },
             endTime: { type: 'string', format: 'date-time' },
           },
