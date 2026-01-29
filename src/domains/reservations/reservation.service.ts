@@ -1,4 +1,3 @@
-// Reservation service - business logic layer
 import { v4 as uuidv4 } from 'uuid';
 import { isValidRoomId } from '../rooms/index.js';
 import { reservationRepository } from './reservation.repository.js';
@@ -10,7 +9,6 @@ import {
 } from './reservation.types.js';
 import { toReservationResponse } from './reservation.utils.js';
 
-// Result types for service operations
 export interface ServiceSuccess<T> {
   success: true;
   data: T;
@@ -24,7 +22,6 @@ export interface ServiceError {
 
 export type ServiceResult<T> = ServiceSuccess<T> | ServiceError;
 
-// Checks if two time ranges overlap (start inclusive, end exclusive)
 function doTimesOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
   return start1 < end2 && end1 > start2;
 }
