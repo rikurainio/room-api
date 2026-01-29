@@ -7,14 +7,14 @@ const server = buildApp({
   logger:
     process.env.NODE_ENV === 'production'
       ? {
-        level: 'info',
-      }
+          level: 'info',
+        }
       : {
-        level: 'info',
-        transport: {
-          target: 'pino-pretty',
+          level: 'info',
+          transport: {
+            target: 'pino-pretty',
+          },
         },
-      },
 });
 
 async function start(): Promise<void> {
