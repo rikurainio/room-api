@@ -336,6 +336,20 @@ test('DELETE /reservations/:id - returns 404 for non-existent reservation', asyn
   assert.ok(body.message.includes('not found'));
 });
 
+test('GET /rooms/:roomId/reservations - rejects invalid room ID', async (t) => {
+  const app = buildApp();
+  t.after(() => app.close());
+
+  const response = await app.inject({
+    method: 'GET',
+    url: '/rooms/invalid/reservations',
+  });
+
+  assert.strictEqual(response.statusCode, 400);
+  const body = response.json();
+  assert.ok(body.message.includes('Invalid room ID'));
+});
+
 test('GET /rooms/:roomId/reservations - returns empty array when no reservations', async (t) => {
   const app = buildApp();
   t.after(() => app.close());
