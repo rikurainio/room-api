@@ -9,7 +9,7 @@ import {
   removeReservation,
 } from '../db.js';
 import type { CreateReservationInput, Reservation, ReservationResponse } from '../types.js';
-import { validateReservation } from '../validators.js';
+import { validateReservation, validateRoomId } from '../validators.js';
 
 // Converts a Reservation to API response format
 function toReservationResponse(reservation: Reservation): ReservationResponse {
@@ -121,6 +121,16 @@ export async function reservationRoutes(fastify: FastifyInstance): Promise<void>
     },
     async (request: FastifyRequest<{ Params: { roomId: string } }>, reply: FastifyReply) => {
       const { roomId } = request.params;
+
+      // Validate room ID
+      const roomIdResult = validateRoomId(roomId);
+      if (!roomIdResult.isValid) {
+        return reply.status(400).send({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: roomIdResult.error,
+        });
+      }
 
       const reservations = getReservationsByRoom(roomId);
 
