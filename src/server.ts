@@ -6,12 +6,16 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 const server = buildApp({
-  logger: {
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-    },
-  },
+  logger: process.env.NODE_ENV === 'production'
+    ? {
+      level: 'info'
+    }
+    : {
+      level: 'info',
+      transport: {
+        target: 'pino-pretty'
+      }
+    }
 });
 
 async function start(): Promise<void> {
