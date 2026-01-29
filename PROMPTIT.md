@@ -24,7 +24,7 @@ TESTING.md
 # 1. Vastaus + Implementation Plan
 ![vastaus_1](image.png)
 
-implementation_plan.md
+### implementation_plan.md
 Meeting Room Reservation API - Implementation Plan
 A production-ready Fastify + TypeScript API for managing meeting room reservations with an in-memory database.
 
@@ -141,7 +141,7 @@ proceed
 ![vastaus_2.1](images/image-2.png)
 ![vastaus_2.2](images/image-3.png)
 
-walkthrough.md
+### walkthrough.md
 Meeting Room Reservation API - Walkthrough
 Summary
 Implemented a production-ready Fastify + TypeScript API for meeting room reservations with:
@@ -415,3 +415,452 @@ Refactor	Repeated error construction	🟢 Low
 Perf	O(n) room lookup	🟢 Low
 Perf	Sort on every read	🟢 Low
 Would you like me to address any of these issues?
+
+# 5. Prompti
+refactor this app for scale. We should have a service layer, and we should probably seperate things by different domains, so the app scales easier in the future, and is easier to read and maintain.
+
+# 5. Vastaus
+Thought for 3s
+
+
+Analyzed
+c:\Users\raini\Desktop\code\room-api
+Analyzed
+c:\Users\raini\Desktop\code\room-api\src
+Let me explore the domains and other directories to understand the current structure:
+
+Analyzed
+c:\Users\raini\Desktop\code\room-api\src\domains
+Analyzed
+c:\Users\raini\Desktop\code\room-api\src\routes
+Analyzed
+c:\Users\raini\Desktop\code\room-api\src\shared
+Planning Domain-Driven Architecture Refactor
+Completed codebase analysis. Current structure has routes with business logic in 
+reservations.ts
+, 
+db.ts
+ as repository, 
+types.ts
+ and 
+validators.ts
+ at root. Tests exist in 
+tests/reservations.test.ts
+ (418 lines) using Node.js test runner.
+
+Files Edited
+Implementation Plan
+Task
+Progress Updates
+1
+Exploring current codebase structure
+
+2
+Reviewing tests and preparing implementation plan
+
+3
+Creating implementation plan for domain-driven refactor
+
+I've analyzed your codebase and created an implementation plan for refactoring to a domain-driven architecture.
+
+Key changes:
+
+Reservations domain with proper layers: repository → service → routes
+Rooms domain for room configuration
+Shared module for common types
+The plan uses classes for the repository and service to encapsulate state and logic cleanly. All existing tests should continue to pass after refactoring.
+
+Please review the implementation plan and let me know if you'd like any adjustments to the proposed structure.
+
+### implementation_plan.md
+Domain-Driven Architecture Refactor
+Refactor the meeting room reservation API from a flat structure to a scalable, domain-driven architecture with proper separation of concerns (repository → service → controller pattern).
+
+Current Structure
+src/
+├── app.ts              # Fastify app builder
+├── server.ts           # Entry point
+├── db.ts               # In-memory repository (mixed concerns)
+├── types.ts            # All types in one file
+├── validators.ts       # Business logic + validation
+├── routes/
+│   └── reservations.ts # Routes + business logic mixed
+├── domains/            # Empty placeholder folders
+└── shared/             # Empty placeholder folders
+Proposed Structure
+src/
+├── app.ts                              # Fastify app (registers domain routes)
+├── server.ts                           # Entry point (unchanged)
+├── domains/
+│   ├── index.ts                        # Barrel export
+│   ├── reservations/
+│   │   ├── index.ts                    # Domain barrel export
+│   │   ├── reservation.types.ts        # Domain-specific types
+│   │   ├── reservation.repository.ts   # Data access layer
+│   │   ├── reservation.service.ts      # Business logic layer
+│   │   └── reservation.routes.ts       # HTTP controller layer
+│   └── rooms/
+│       ├── index.ts                    # Domain barrel export
+│       └── room.types.ts               # Room constants/types
+└── shared/
+    ├── types/
+    │   └── api.types.ts                # Shared API types (ApiError, etc.)
+    └── utils/
+        └── validation.ts               # Generic validation utilities
+Proposed Changes
+Rooms Domain
+Simple domain containing room configuration.
+
+[NEW] 
+room.types.ts
+Define VALID_ROOM_IDS constant (moved from 
+types.ts
+)
+Export room validation helper
+[NEW] 
+index.ts
+Barrel export for rooms domain
+Reservations Domain
+Core domain with full layered architecture.
+
+[NEW] 
+reservation.types.ts
+Reservation
+ interface
+CreateReservationInput
+ interface
+ReservationResponse
+ interface
+MIN_RESERVATION_MINUTES constant
+[NEW] 
+reservation.repository.ts
+In-memory Map storage (from 
+db.ts
+)
+ReservationRepository class with methods:
+add(reservation)
+remove(id)
+findById(id)
+findByRoom(roomId)
+findAll()
+clear()
+[NEW] 
+reservation.service.ts
+ReservationService class encapsulating business logic:
+createReservation(input) - validates and creates
+cancelReservation(id) - finds and removes
+getReservationsByRoom(roomId)
+ - validates room and retrieves
+All validation logic moved here (from 
+validators.ts
+)
+Returns typed results/errors
+[NEW] 
+reservation.routes.ts
+Fastify route definitions (from 
+routes/reservations.ts
+)
+Thin controller layer - delegates to service
+Response formatting
+[NEW] 
+index.ts
+Barrel export for reservations domain
+Shared Module
+[NEW] 
+api.types.ts
+ApiError
+ interface
+ValidationResult
+ interface
+Entry Points
+[MODIFY] 
+app.ts
+Update imports to use new domain routes
+[NEW] 
+index.ts
+Barrel export for all domains
+Files to Delete (After Verification)
+[DELETE] 
+db.ts
+[DELETE] 
+types.ts
+[DELETE] 
+validators.ts
+[DELETE] 
+routes/reservations.ts
+Verification Plan
+Automated Tests
+Run the existing test suite which covers all API endpoints:
+
+npm test
+This runs 17 tests covering:
+
+Creating valid reservations
+Invalid room ID rejection
+Minimum duration validation
+Past reservation rejection
+Time order validation
+Overlap detection
+Back-to-back reservations
+Cancellation
+Room-specific queries
+Linting & Type Checking
+npm run lint
+npm run typecheck
+Manual Verification
+Start the dev server and test with curl or Bruno:
+
+npm run dev
+Test creating a reservation:
+
+curl -X POST http://localhost:3000/reservations -H "Content-Type: application/json" -d '{"roomId":"1","title":"Test","startTime":"2026-01-30T10:00:00Z","endTime":"2026-01-30T11:00:00Z"}'
+
+# 6. Prompti
+proceed
+
+# 6. Vastaus
+
+Implementing Rooms Domain
+Implementation plan approved. Starting execution of domain-driven architecture refactor.
+
+Files Edited
+index.ts
+room.types.ts
+Task
+Progress Updates
+1
+Creating rooms domain types and barrel export
+
+Implementing Reservations Domain
+Created 
+reservation.types.ts
+, 
+reservation.repository.ts
+, and 
+reservation.service.ts
+ with full business logic and validation.
+
+Files Edited
+index.ts
+index.ts
+reservation.routes.ts
+reservation.service.ts
+reservation.repository.ts
+reservation.types.ts
+Progress Updates
+1
+Creating reservation types, repository, and service
+
+2
+Creating reservation routes and barrel exports
+
+Updating Entry Points and Cleanup
+Created reservations domain: 
+reservation.routes.ts
+ (thin controller), 
+index.ts
+ barrel export, and domains 
+index.ts
+. All domain files complete.
+
+Files Edited
+reservations.test.ts
+app.ts
+Progress Updates
+1
+Updating app.ts and tests to use new domain imports
+
+Verifying Refactored Architecture
+All 17 tests pass after cleanup. Old files deleted. Refactoring complete and verified.
+
+Files Edited
+Walkthrough
+Task
+Progress Updates
+1
+Running tests, linting, and type checking
+
+2
+Fixing linting errors in new domain files
+
+3
+Cleaning up old files and final verification
+
+4
+Running final verification after cleanup
+
+5
+Creating walkthrough and completing task
+
+Refactoring complete! ✅
+
+What was done:
+
+Created reservations domain with proper layers: repository → service → routes
+Created rooms domain with room configuration
+Updated all imports and deleted old files (db.ts, types.ts, validators.ts, routes/)
+Verification:
+
+All 17 tests pass
+Type checking successful
+Linting clean
+The new structure is much easier to scale - to add a new domain (e.g., users, notifications), you just create a new folder under src/domains/ with the same layered pattern.
+
+### walkthrough.md:
+Domain-Driven Architecture Refactor - Walkthrough
+Summary
+Refactored the meeting room reservation API from a flat structure to a domain-driven architecture with proper separation of concerns using the repository → service → routes pattern.
+
+New Structure
+src/
+├── app.ts                              # Registers domain routes
+├── server.ts                           # Entry point (unchanged)
+└── domains/
+    ├── index.ts                        # Barrel export
+    ├── reservations/
+    │   ├── index.ts                    # Domain exports
+    │   ├── reservation.types.ts        # Types & constants
+    │   ├── reservation.repository.ts   # Data access layer
+    │   ├── reservation.service.ts      # Business logic
+    │   └── reservation.routes.ts       # HTTP controller
+    └── rooms/
+        ├── index.ts                    # Domain exports
+        └── room.types.ts               # Room constants
+Key Changes
+Layers Introduced
+Layer	Responsibility	File
+Repository	Data access (in-memory Map)	
+reservation.repository.ts
+Service	Business logic & validation	
+reservation.service.ts
+Routes	HTTP handling, thin controller	
+reservation.routes.ts
+Files Deleted
+src/db.ts
+ → Moved to 
+reservation.repository.ts
+src/types.ts
+ → Split into domain-specific types
+src/validators.ts
+ → Moved to 
+reservation.service.ts
+src/routes/reservations.ts
+ → Moved to 
+reservation.routes.ts
+Verification
+✓ Tests:     17 passed
+✓ Typecheck: Success
+✓ Lint:      0 errors
+
+# 7. Prompti
+reservation.types.ts#L31-42
+ that's good, but I dont think for example this function should be in reservation.types.ts,
+room.types.ts#L4-12
+ and same for these in room.types.ts
+
+# 7. Vastaus
+Thought for 4s
+Good point! Functions shouldn't be in 
+.types.ts
+ files—those should only contain types and constants. Let me move them to proper utility files:
+
+Created
+room.utils.ts
++9
+-0
+9 insertions (+)
+0 deletions (-)
+Created
+reservation.utils.ts
++16
+-0
+16 insertions (+)
+0 deletions (-)
+Analyzed
+room.types.ts#L1-12
+Analyzed
+reservation.types.ts#L1-42
+Now let me update the types files to remove the functions, and update the imports in other files:
+
+Edited
+room.types.ts
++2
+-7
+Edited
+reservation.types.ts
++16
+-28
+Analyzed
+index.ts#L1-4
+Analyzed
+index.ts#L1-13
+Now let me update the barrel exports to use the correct import paths and fix the service import:
+
+Edited
+index.ts
++2
+-1
+Edited
+index.ts
++5
+-4
+Analyzed
+reservation.service.ts#L1-152
+Now let me update the service to import from the utils file instead:
+
+Edited
+reservation.service.ts
++1
+-1
+Now let me run verifications to make sure everything works:
+
+…\code\room-api > npm run lint:fix
+
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 978.7867
+PS C:\Users\raini\Desktop\code\room-api> cd 'c:\Users\raini\Desktop\code\room-api'      
+PS C:\Users\raini\Desktop\code\room-api> npm run lint:fix
+
+> room-reservation-api@1.0.0 lint:fix       
+> biome check --write .
+
+Checked 17 files in 17ms. Fixed 2 files.
+Ran terminal command
+Go to Terminal
+·
+Exit code 0
+
+Request Review
+…\code\room-api > npm test
+
+Ran terminal command
+Relocate
+·
+Exit code 0
+
+Request Review
+All 17 tests pass. The refactoring is complete. Here's a summary of what I did:
+
+Moved functions to proper utility files:
+
+From	To
+room.types.ts
+ → 
+isValidRoomId()
+room.utils.ts
+reservation.types.ts
+ → 
+toReservationResponse()
+reservation.utils.ts
+Now your 
+.types.ts
+ files only contain types, interfaces, and constants — no functions. The functions live in 
+.utils.ts
+ files which keep the separation of concerns cleaner.
+
+All tests pass and linting is clean. ✅
+
+Good
+Bad

@@ -3,7 +3,7 @@
 import assert from 'node:assert';
 import { beforeEach, test } from 'node:test';
 import { buildApp } from '../src/app.js';
-import { clearReservations } from '../src/db.js';
+import { reservationService } from '../src/domains/reservations/reservation.service.js';
 
 // Helper to create a future date
 function getFutureDate(hoursFromNow: number): string {
@@ -20,7 +20,7 @@ function getFutureDateMinutes(minutesFromNow: number): string {
 }
 
 beforeEach(() => {
-  clearReservations();
+  reservationService.clearAll();
 });
 
 test('POST /reservations - creates a valid reservation', async (t) => {

@@ -1,7 +1,7 @@
 // Fastify app builder - separated from server for testability
 
 import Fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
-import { reservationRoutes } from './routes/reservations.js';
+import { reservationRoutes } from './domains/reservations/reservation.routes.js';
 
 export interface AppOptions extends FastifyServerOptions {}
 
