@@ -1,0 +1,25 @@
+meta {
+  name: reservation_cancel
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:3000/reservations/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "roomId": "room_123",
+    "title": "Team Meeting",
+    "startTime": "2026-01-30T10:00:00.000Z",
+    "endTime": "2026-01-30T11:00:00.000Z"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
