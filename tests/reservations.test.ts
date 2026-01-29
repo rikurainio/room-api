@@ -1,5 +1,3 @@
-// Tests for the Reservation API
-
 import assert from 'node:assert';
 import { beforeEach, test } from 'node:test';
 import { buildApp } from '../src/app.js';

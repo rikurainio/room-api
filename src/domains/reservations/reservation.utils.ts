@@ -1,5 +1,3 @@
-// Reservation domain utilities
-
 import type { Reservation, ReservationResponse } from './reservation.types.js';
 
 // Converts a Reservation to API response format

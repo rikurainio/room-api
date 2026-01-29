@@ -1,5 +1,3 @@
-// Reservation routes - HTTP controller layer
-
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { reservationService } from './reservation.service.js';
 import type { CreateReservationInput } from './reservation.types.js';

@@ -1,5 +1,3 @@
-// Server entry point
-
 import { buildApp } from './app.js';
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -9,14 +7,14 @@ const server = buildApp({
   logger:
     process.env.NODE_ENV === 'production'
       ? {
-          level: 'info',
-        }
+        level: 'info',
+      }
       : {
-          level: 'info',
-          transport: {
-            target: 'pino-pretty',
-          },
+        level: 'info',
+        transport: {
+          target: 'pino-pretty',
         },
+      },
 });
 
 async function start(): Promise<void> {

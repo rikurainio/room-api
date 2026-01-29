@@ -1,5 +1,3 @@
-// Reservation repository - data access layer
-
 import type { Reservation } from './reservation.types.js';
 
 // In-memory storage for reservations

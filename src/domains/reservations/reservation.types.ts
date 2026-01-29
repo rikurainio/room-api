@@ -1,4 +1,3 @@
-// Reservation domain types
 export const MIN_RESERVATION_MINUTES = 5;
 
 export interface Reservation {
