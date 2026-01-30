@@ -33,6 +33,15 @@ export const reservationService = {
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);
 
+    // Validate dates are valid
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return {
+        success: false,
+        error: 'Invalid date format. Please provide valid ISO 8601 date-time strings',
+        statusCode: 400,
+      };
+    }
+
     // Validate room ID
     if (!isValidRoomId(roomId)) {
       return {
