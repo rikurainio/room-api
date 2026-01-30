@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "dev:docker": "docker compose up dev -d",
     "build": "tsc",
+    "build:image": "docker build -t room-reservation-api .",
     "start": "node dist/server.js",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "lint": "biome check .",
@@ -14,7 +16,12 @@
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": ["fastify", "typescript", "api", "reservations"],
+  "keywords": [
+    "fastify",
+    "typescript",
+    "api",
+    "reservations"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
