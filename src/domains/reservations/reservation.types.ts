@@ -1,4 +1,5 @@
 export const MIN_RESERVATION_MINUTES = 5;
+export const MAX_FUTURE_DAYS = 365;
 
 export interface Reservation {
   id: string;

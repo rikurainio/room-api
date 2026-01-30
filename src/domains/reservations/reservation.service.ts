@@ -3,6 +3,7 @@ import { isValidRoomId } from '../rooms/index.js';
 import { reservationRepository } from './reservation.repository.js';
 import {
   type CreateReservationInput,
+  MAX_FUTURE_DAYS,
   MIN_RESERVATION_MINUTES,
   type Reservation,
   type ReservationResponse,
@@ -77,6 +78,17 @@ export const reservationService = {
       return {
         success: false,
         error: 'Reservation start time cannot be in the past',
+        statusCode: 400,
+      };
+    }
+
+    // Validate not too far in future (max 1 year)
+    const maxFutureDate = new Date(now);
+    maxFutureDate.setDate(maxFutureDate.getDate() + MAX_FUTURE_DAYS);
+    if (startDate > maxFutureDate) {
+      return {
+        success: false,
+        error: `Reservations can only be made up to ${MAX_FUTURE_DAYS} days (1 year) in advance`,
         statusCode: 400,
       };
     }

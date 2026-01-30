@@ -167,6 +167,57 @@ test('POST /reservations - rejects when end time is before start time', async (t
   assert.ok(body.message.includes('before end time'));
 });
 
+test('POST /reservations - rejects reservations more than 1 year in future', async (t) => {
+  const app = buildApp();
+  t.after(() => app.close());
+
+  const farFutureStart = new Date();
+  farFutureStart.setDate(farFutureStart.getDate() + 366); // More than 365 days
+
+  const farFutureEnd = new Date(farFutureStart);
+  farFutureEnd.setHours(farFutureEnd.getHours() + 1);
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/reservations',
+    payload: {
+      roomId: '1',
+      title: 'Far Future Meeting',
+      startTime: farFutureStart.toISOString(),
+      endTime: farFutureEnd.toISOString(),
+    },
+  });
+
+  assert.strictEqual(response.statusCode, 400);
+  const body = response.json();
+  assert.ok(body.message.includes('365 days'));
+  assert.ok(body.message.includes('1 year'));
+});
+
+test('POST /reservations - allows reservations up to 364 days in future', async (t) => {
+  const app = buildApp();
+  t.after(() => app.close());
+
+  const nearMaxStart = new Date();
+  nearMaxStart.setDate(nearMaxStart.getDate() + 364);
+  const nearMaxEnd = new Date(nearMaxStart);
+  nearMaxEnd.setHours(nearMaxEnd.getHours() + 1);
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/reservations',
+    payload: {
+      roomId: '1',
+      title: 'Near Max Future Meeting',
+      startTime: nearMaxStart.toISOString(),
+      endTime: nearMaxEnd.toISOString(),
+    },
+  });
+
+  assert.strictEqual(response.statusCode, 201);
+});
+
+
 test('POST /reservations - rejects overlapping reservations', async (t) => {
   const app = buildApp();
   t.after(() => app.close());
