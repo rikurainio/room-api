@@ -35,7 +35,7 @@ export const reservationService = {
     const endDate = new Date(endTime);
 
     // Validate dates are valid
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
       return {
         success: false,
         error: 'Invalid date format. Please provide valid ISO 8601 date-time strings',

@@ -217,7 +217,6 @@ test('POST /reservations - allows reservations up to 364 days in future', async 
   assert.strictEqual(response.statusCode, 201);
 });
 
-
 test('POST /reservations - rejects overlapping reservations', async (t) => {
   const app = buildApp();
   t.after(() => app.close());

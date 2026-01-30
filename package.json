@@ -16,12 +16,7 @@
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": [
-    "fastify",
-    "typescript",
-    "api",
-    "reservations"
-  ],
+  "keywords": ["fastify", "typescript", "api", "reservations"],
   "author": "",
   "license": "ISC",
   "dependencies": {
