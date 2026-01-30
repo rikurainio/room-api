@@ -8,5 +8,5 @@
 - Kommentoi todella paljon koodia, jopa yksinkertaisia funktioita. (makuasia)
 
 3. Tärkeimmät parannukset
-- Docker imagen korjaus (ei devdependency kirjastolla logaamista prodissa)
-- Arkkitehtuurin parantaminen, eli jaetaan koodia domaineihin. Halutessaan voisi olla vielä vaikka controllereita sun muita.
+- Docker imagen korjaus (ei devdependency kirjastolla logaamista prodissa) tärkeä jotta buildattu docker image toimii
+- Arkkitehtuurin parantaminen, eli jaetaan koodia domaineihin. Halutessaan voisi olla vielä vaikka controllereita sun muita. Tärkeä, koska jos api yhtään kasvaa, on helpompi lisätä uusia featureita ja pitää koodi luettavana ja ymmärrettävänä.
